@@ -1,46 +1,54 @@
-import React, { useState } from 'react';
-import axios from '../../axios.js';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import axios from "../../axios.js";
+import { useNavigate } from "react-router-dom";
+import Loading from "../Loading.jsx"; // Import the Loading component
 
 const Register = () => {
-  console.log("register")
-  const [fullName, setFullName] = useState('');
-  const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [avatar, setAvatar] = useState(null);
   const [coverImage, setCoverImage] = useState(null);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false); // Add loading state
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setLoading(true); // Show loading screen
+
     const formData = new FormData();
-    formData.append('fullName', fullName);
-    formData.append('email', email);
-    formData.append('username', username);
-    formData.append('password', password);
-    formData.append('avatar', avatar);
-    formData.append('coverImage', coverImage);
+    formData.append("fullName", fullName);
+    formData.append("email", email);
+    formData.append("username", username);
+    formData.append("password", password);
+    formData.append("avatar", avatar);
+    formData.append("coverImage", coverImage);
 
     try {
-      const response = await axios.post('/users/register', formData, {
+      const response = await axios.post("/users/register", formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
         },
       });
-      // Handle successful registration, e.g., redirect to login page
-      console.log('Registration successful:', response.data);
-      navigate('/login');
+
+      console.log("Registration successful:", response.data);
+      navigate("/login");
     } catch (err) {
-      setError('Registration failed');
-      console.error('Registration error:', err);
+      setError("Registration failed");
+      console.error("Registration error:", err);
+    } finally {
+      setLoading(false); // Hide loading screen
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="p-6 bg-white rounded shadow-md">
+    <div className="flex items-center justify-center min-h-screen bg-black">
+      {/* Loading Component */}
+      <Loading isLoading={loading} />
+
+      <div className="p-6 bg-violet-500 rounded shadow-md">
         <h2 className="mb-4 text-2xl font-bold">Register</h2>
         {error && <p className="mb-4 text-red-500">{error}</p>}
         <form onSubmit={handleSubmit}>
@@ -121,17 +129,18 @@ const Register = () => {
           <button
             type="submit"
             className="w-full px-4 py-2 mb-4 text-white bg-blue-500 rounded hover:bg-blue-700"
+            disabled={loading}
           >
-            Register
+            {loading ? "Registering..." : "Register"}
           </button>
-          
         </form>
         <button
-            onClick={() => navigate('/login')}
-            className="w-full px-4 py-2 text-white bg-green-500 rounded hover:bg-blue-700"
-          >
-            Login
-          </button>
+          onClick={() => navigate("/login")}
+          className="w-full px-4 py-2 text-white bg-green-500 rounded hover:bg-green-700"
+          disabled={loading}
+        >
+          Login
+        </button>
       </div>
     </div>
   );

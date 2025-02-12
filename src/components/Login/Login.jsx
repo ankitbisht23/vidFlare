@@ -4,15 +4,17 @@ import { useDispatch } from 'react-redux';
 import axios from '../../axios.js';
 import { setUser, setAccessToken } from '../../store/authSlice';
 import UserImage from '../../../public/user.jpg'
-
+import Loading from '../Loading.jsx';
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [loading,setLoading]=useState(false);
 
   const handleSubmit = async (event) => {
+    setLoading(true);
     event.preventDefault();
     try {
       const response = await axios.post('/users/login', {
@@ -32,11 +34,16 @@ const Login = () => {
       setError('Invalid username or password');
       console.error('Login error:', err);
     }
+    finally{
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="flex w-full max-w-4xl p-6 bg-white rounded shadow-md gap-2">
+    <div className="flex items-center justify-center min-h-screen bg-black">
+      {/* Loading screen */}
+      <Loading isLoading={loading}/>
+      <div className="flex w-full max-w-4xl p-6 bg-violet-500 rounded shadow-md gap-2">
         <div className="w-1/2">
           <h2 className="mb-4 text-2xl font-bold">Login</h2>
           {error && <p className="mb-4 text-red-500">{error}</p>}
@@ -70,6 +77,7 @@ const Login = () => {
             <button
               type="submit"
               className="w-full px-4 py-2 mb-4 text-white bg-blue-500 rounded hover:bg-blue-700"
+              disabled={loading}
             >
               Login
             </button>
@@ -84,9 +92,9 @@ const Login = () => {
         <div className="w-1/2 p-6 bg-gray-200 rounded "> 
         <div className='flex justify-center'><img src={UserImage} className='w-44 flex'/></div>
           <h2 className="mb-4 text-4xl font-bold text-center">Welcome Back!</h2>
-          <p className="text-gray-600 text-center font-semibold pt-4">
+          <p className="text-gray-600 text-center font-semibold pt-4 italic">
           
-          Sign in to access your personalized video feed, upload new content, and connect with your favorite creators. Don&apos;t have an account? Join our community today!
+          Recruiters use username test1 and password test
          </p>
         </div>
       </div>
