@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import axios from "../../axios.js";
 import { useNavigate } from "react-router-dom";
-import Loading from "../Loading.jsx"; // Import the Loading component
-
+import Loading from "../Loading.jsx";
+import UserImage from '../../../public/noni.jpg'
 const Register = () => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -11,12 +11,12 @@ const Register = () => {
   const [avatar, setAvatar] = useState(null);
   const [coverImage, setCoverImage] = useState(null);
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false); // Add loading state
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setLoading(true); // Show loading screen
+    setLoading(true);
 
     const formData = new FormData();
     formData.append("fullName", fullName);
@@ -39,108 +39,85 @@ const Register = () => {
       setError("Registration failed");
       console.error("Registration error:", err);
     } finally {
-      setLoading(false); // Hide loading screen
+      setLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-black">
-      {/* Loading Component */}
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-black via-gray-900 to-purple-900">
       <Loading isLoading={loading} />
-
-      <div className="p-6 bg-violet-500 rounded shadow-md">
-        <h2 className="mb-4 text-2xl font-bold">Register</h2>
-        {error && <p className="mb-4 text-red-500">{error}</p>}
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label htmlFor="fullName" className="block mb-2 text-sm font-medium">
-              Full Name
-            </label>
+      <div className="flex w-full max-w-4xl mx-[-2px] md:mx-0 rounded-xl border border-purple-800 shadow-lg overflow-hidden md:flex">
+        <div className="w-full md:w-1/2 p-8">
+          <h2 className="mb-4 text-3xl font-bold text-violet-700">Create Account</h2>
+          {error && <p className="mb-4 text-red-500">{error}</p>}
+          <form onSubmit={handleSubmit} className="space-y-4">
             <input
               type="text"
-              id="fullName"
+              placeholder="Full Name"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded"
+              className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-violet-500"
               required
             />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="email" className="block mb-2 text-sm font-medium">
-              Email
-            </label>
             <input
               type="email"
-              id="email"
+              placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded"
+              className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-violet-500"
               required
             />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="username" className="block mb-2 text-sm font-medium">
-              Username
-            </label>
             <input
               type="text"
-              id="username"
+              placeholder="Username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded"
+              className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-violet-500"
               required
             />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="password" className="block mb-2 text-sm font-medium">
-              Password
-            </label>
             <input
               type="password"
-              id="password"
+              placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded"
+              className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-violet-500"
               required
             />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="avatar" className="block mb-2 text-sm font-medium">
-              Avatar
-            </label>
             <input
               type="file"
-              id="avatar"
               onChange={(e) => setAvatar(e.target.files[0])}
-              className="w-full p-2 border border-gray-300 rounded"
+              className="w-full text-sm text-white"
             />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="coverImage" className="block mb-2 text-sm font-medium">
-              Cover Image
-            </label>
             <input
               type="file"
-              id="coverImage"
               onChange={(e) => setCoverImage(e.target.files[0])}
-              className="w-full p-2 border border-gray-300 rounded"
+              className="text-white w-full text-sm"
             />
-          </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-36 py-2 text-violet-700 bg-gradient-to-br from-black via-gray-900 to-purple-900 hover:bg-violet-800 rounded transition"
+            >
+              {loading ? "Registering..." : "Register"}
+            </button>
+          </form>
           <button
-            type="submit"
-            className="w-full px-4 py-2 mb-4 text-white bg-blue-500 rounded hover:bg-blue-700"
+            onClick={() => navigate("/login")}
             disabled={loading}
+            className="w-full py-2 ease-in-out duration-300  mt-3 text-violet-700  bg-gradient-to-br from-black via-gray-900 to-purple-900 hover:bg-violet-100 rounded transition"
           >
-            {loading ? "Registering..." : "Register"}
+            Already have an account? Login
           </button>
-        </form>
-        <button
-          onClick={() => navigate("/login")}
-          className="w-full px-4 py-2 text-white bg-green-500 rounded hover:bg-green-700"
-          disabled={loading}
-        >
-          Login
-        </button>
+        </div>
+
+        {/* Right Panel (Gradient Visual Section) */}
+        <div className="relative hidden w-1/2 p-10 bg-gradient-to-br from-purple-700 to-purple-500 md:flex flex-col justify-center items-center text-white mx-[-2px] md:mx-0">
+          <img src={UserImage} alt="User" className="w-auto h-auto mb-6 rounded-lg shadow-lg" />
+          <h2 className="text-4xl text-center font-bold mb-4">Welcome to the Family!</h2>
+          <p className="text-center font-medium italic">
+            Be a part of our journey. Get started by registering your account.
+          </p>
+        </div>
       </div>
     </div>
   );

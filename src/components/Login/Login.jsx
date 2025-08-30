@@ -3,29 +3,28 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import axios from '../../axios.js';
 import { setUser, setAccessToken } from '../../store/authSlice';
-import UserImage from '../../../public/user.jpg'
+import UserImage from '../../../public/noni.jpg';
 import Loading from '../Loading.jsx';
+
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [loading,setLoading]=useState(false);
 
   const handleSubmit = async (event) => {
-    setLoading(true);
     event.preventDefault();
+    setLoading(true);
     try {
-      const response = await axios.post('/users/login', {
-        username,
-        password,
-      });
+      const response = await axios.post('/users/login', { username, password });
       const { user, accessToken } = response.data.data;
 
       dispatch(setUser(user));
       dispatch(setAccessToken(accessToken));
-      
+
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('user', JSON.stringify(user));
 
@@ -33,69 +32,73 @@ const Login = () => {
     } catch (err) {
       setError('Invalid username or password');
       console.error('Login error:', err);
-    }
-    finally{
+    } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-black">
-      {/* Loading screen */}
-      <Loading isLoading={loading}/>
-      <div className="flex w-full max-w-4xl p-6 bg-violet-500 rounded shadow-md gap-2">
-        <div className="w-1/2">
-          <h2 className="mb-4 text-2xl font-bold">Login</h2>
-          {error && <p className="mb-4 text-red-500">{error}</p>}
-          <form onSubmit={handleSubmit}>
-            <div className="mb-4">
-              <label htmlFor="username" className="block mb-2 text-sm font-medium">
-                Username
-              </label>
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-black via-gray-900 to-purple-900">
+      <Loading isLoading={loading} />
+      <div className="flex w-full max-w-5xl overflow-hidden bg-whiterounded-2xl shadow-2xl">
+        {/* Left - Form */}
+        <div className="w-full md:w-1/2 p-10 space-y-6 border border-purple-700 rounded-md">
+          <h2 className="text-4xl font-bold text-purple-700">Welcome Back</h2>
+          <p className="text-sm text-gray-500">Enter your credentials to access your account</p>
+
+          {error && (
+            <div className="px-4 py-2 text-sm text-red-600 bg-red-100 rounded">
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label htmlFor="username" className="block text-2xl mb-0px font-medium text-purple-700">Username</label>
               <input
                 type="text"
                 id="username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded"
+                className=" text-xl w-full px-4 py-2 mt-1 border rounded-md shadow-sm focus:ring-2 focus:ring-purple-500 focus:outline-none"
                 required
               />
             </div>
-            <div className="mb-4">
-              <label htmlFor="password" className="block mb-2 text-sm font-medium">
-                Password
-              </label>
+            <div>
+              <label htmlFor="password" className="block text-2xl mb-0px font-medium text-purple-700">Password</label>
               <input
                 type="password"
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded"
+                className="  text-xl w-full px-4 py-2 mt-1 border rounded-md shadow-sm focus:ring-2 focus:ring-purple-500 focus:outline-none"
                 required
               />
             </div>
             <button
               type="submit"
-              className="w-full px-4 py-2 mb-4 text-white bg-blue-500 rounded hover:bg-blue-700"
               disabled={loading}
+              className="w-full py-2 text-white transition-all duration-200 bg-purple-600 rounded hover:bg-purple-700 disabled:opacity-50"
             >
-              Login
+              {loading ? 'Logging in...' : 'Login'}
             </button>
           </form>
+
           <button
             onClick={() => navigate('/register')}
-            className="w-full px-4 py-2 text-white bg-green-500 rounded hover:bg-green-700"
+            className="w-full py-2 mt-2 text-purple-600 border border-purple-600 rounded hover:bg-purple-50  ease-in-out duration-300"
           >
             Sign Up
           </button>
         </div>
-        <div className="w-1/2 p-6 bg-gray-200 rounded "> 
-        <div className='flex justify-center'><img src={UserImage} className='w-44 flex'/></div>
-          <h2 className="mb-4 text-4xl font-bold text-center">Welcome Back!</h2>
-          <p className="text-gray-600 text-center font-semibold pt-4 italic">
-          
-          Recruiters use username test1 and password test
-         </p>
+
+        {/* Right - Image and Message */}
+        <div className="mx-[-2px] border border-purple-700 rounded-md md:mx-0 relative hidden w-1/2 p-10 bg-gradient-to-br from-purple-700 to-purple-500 md:flex flex-col justify-center items-center text-white">
+          <img src={UserImage} alt="User" className="w-auto h-auto mb-6 rounded-lg shadow-lg" />
+          <h2 className="text-3xl font-semibold">Glad to see you again!</h2>
+          <p className="mt-4 italic text-center text-gray-100 px-4">
+            Recruiters use username <span className="font-bold">test1</span> and password <span className="font-bold">test</span>
+          </p>
         </div>
       </div>
     </div>
